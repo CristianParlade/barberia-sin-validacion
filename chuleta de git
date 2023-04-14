@@ -1,0 +1,77 @@
+git es un sistema de control de versiones 
+con este sistema podemos rastrear las diferentes actualizaciones 
+merge siginifica fucionar o convinar 
+git funciona de forma local
+github funciona de forma remota se utiliza para trabajar en equipo en repositorios remotos es un servicio de hosting
+
+commit son los registros de los cambios que hemos realizados en un proyecto
+
+git bash es como el powershell pero este es de git  es mas moderno 
+
+ ~ este smbolo de git bash es como si fuese la / indica que es la realizados
+ 
+-comando cd significa change directory que es el que vamos a utilizar para poder movernos en la linea de comando de una carpeta a otra utilizando cd solo esto vuelve a la raiz
+
+-comando cd.. este es para volver a una carpeta anterior
+
+-comando 
+
+-comando mkdir el mismo que utilizamos en php sirve para poder crear una carpeta nueva
+
+-comando rmdir este sirve para eliminar carpetas o documentos
+
+-comando ls sirve para ver todo el contenido de un directorio (carpeta)
+
+-comando git status este nos muestra el estado del repositorio
+
+-comando git add es para agregar archivos 
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+-comando
+
+la diagonal al final de un nombre nos indica que es una carpeta por ejemplo
+
+curso/
+
+y si esta carpeta comienza con un . esto queire decir que la carpeta esta oculta por ejemplo 
+
+.curso/
+
+
+CREAR REPOSITORIO
+
+git init
+
+hay tres areas principales
+LAS CUALES EN CADA UNA QUIERE DECIR EL ESTADO DE LOS ARCHIVOS 
+
+((()))))directorio de trabajo
+ESTE ES LA CARPETA QUE CONTIENE TODOS LOS ARCHIVOS
+Y SU ESTADO ES MODIFICADO EN INGLES ES MODIFIED
+
+(((())))Area de preparacion
+PRACTICAMENTE NOS PERMITE INCLUIR TODO LO QUE VAMOS A PONER EN EL PROXIMO COMMIT(EL COMIT ES UNA COPIA DE PROYECTO)
+Y SU ESTADO ES PREPARADO  EN INGLES ES STAGED
+
+(((())))Repositorio
+ESTE CONTIENE TODOS LOS METADATOS Y TODAS LAS ACTUALIZACIONES DEL PROYECTO
+Y SU ESTADO ES CONFIRMADO EN INGLES ES COMMITTED
+
+
