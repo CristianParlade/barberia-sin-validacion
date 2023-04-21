@@ -30,6 +30,8 @@ class ActiveRecord {
         static::$alertas = [];
         return static::$alertas;
     }
+    
+    
 
     // Consulta SQL para crear un objeto en Memoria
     public static function consultarSQL($query) {

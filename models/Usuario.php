@@ -84,7 +84,16 @@ class Usuario extends ActiveRecord{
         $this->token = uniqid();
     }
 
-    
+    public function validarLogin(){
+        if(!$this->email){
+            self::$alertas['error'][] = '¿Cuál es tu email?';
+        }
+        if(!$this->password){
+            self::$alertas['error'][] = '¿Cuál es el password?';
+        }
+
+        return self::$alertas;
+    }
 
     // public function crearUsuario(){
     //     $atributos = self::sanitizarAtributos();

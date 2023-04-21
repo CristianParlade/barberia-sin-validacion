@@ -9,8 +9,20 @@ use Classes\Email;
 
 class LoginController{
     public static function login(Router $router){
+        $alertas = [];
 
-        $router->render('auth/login');
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+           $auth = new Usuario($_POST);
+
+           $alertas = $auth->validarLogin();
+           
+           $auth->getAlertas();
+        }
+
+        $router->render('auth/login',[
+            'alertas' => $alertas,
+            'auth' => $auth
+        ]);
     
     }
 
@@ -82,11 +94,17 @@ class LoginController{
     public static function confirmarCuenta(Router $router){
         $alertas = [];
         $token = $_GET['token'];
-        $resultado = Usuario::where('token', $token.' ');
+        $usuario = Usuario::where('token', $token.' ');
+
+       
         
-        if(!empty($resultado)){
+        if(!empty($usuario)){
+            $usuario->token = '';
+            $usuario->confirmado = 1;
             Usuario::setAlerta('exito', 'Usuario Confirmado');
             $alertas = Usuario::getAlertas();
+            $usuario->guardar();
+
         }else{
             Usuario::setAlerta('error', 'No se pudo confirmar el Usuario');
             $alertas = Usuario::getAlertas();
@@ -95,7 +113,7 @@ class LoginController{
         $router->render('auth/confirmarCuenta', [
             'alertas' => $alertas,
             'token' => $token,
-            'resultado' => $resultado
+            'usuario' => $usuario
         ]);
 
     }
