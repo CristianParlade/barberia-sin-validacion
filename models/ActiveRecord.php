@@ -14,12 +14,14 @@ class ActiveRecord {
     public static function setDB($database) {
         self::$db = $database;
     }
+//?esta guarda en memoria el tipo de alerta y su mensaje
 
     public static function setAlerta($tipo, $mensaje) {
         static::$alertas[$tipo][] = $mensaje;
     }
 
-    // Validación
+//?esta obtiene esos datos en memoria y los convierte a un arreglo
+
     public static function getAlertas() {
         return static::$alertas;
     }
@@ -111,14 +113,20 @@ class ActiveRecord {
 
     // Busca un registro por su id
     public static function find($id) {
-        $query = "SELECT * FROM " . static::$tabla  ." WHERE id = ${id}";
+        $query = "SELECT * FROM " . static::$tabla  ." WHERE id = $id";
         $resultado = self::consultarSQL($query);
+        return array_shift( $resultado ) ;
+    }
+    public static function where($columna, $valor) {
+        $query = "SELECT * FROM " . static::$tabla  ." WHERE $columna = '$valor'";
+        $resultado = self::consultarSQL($query);
+        
         return array_shift( $resultado ) ;
     }
 
     // Obtener Registros con cierta cantidad
     public static function get($limite) {
-        $query = "SELECT * FROM " . static::$tabla . " LIMIT ${limite}";
+        $query = "SELECT * FROM " . static::$tabla . " LIMIT $limite";
         $resultado = self::consultarSQL($query);
         return array_shift( $resultado ) ;
     }
