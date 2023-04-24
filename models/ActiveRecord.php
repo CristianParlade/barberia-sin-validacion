@@ -1,5 +1,6 @@
 <?php
 namespace Model;
+
 class ActiveRecord {
 
     // Base DE DATOS

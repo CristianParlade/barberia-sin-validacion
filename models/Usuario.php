@@ -1,7 +1,11 @@
 <?php 
 
 namespace Model;
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+use Classes\Email;
 use Model\ActiveRecord;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -63,6 +67,24 @@ class Usuario extends ActiveRecord{
             return $resultado;
     } 
 
+    public function validarEmail(){
+        if(!$this->email){
+            self::$alertas['error'][] = 'El email es obligatorio';
+        }
+        return self::$alertas;
+    }
+
+    public function validarUsuario(){
+        if(!$this){
+            $alertas['error'][] = 'El usuario no existe o no esta confirmado';            
+        }else{
+          $alertas['exito'][] = 'Revisa tu email';
+          $this->crearToken();
+          $this->guardar();
+        } 
+        return $alertas;
+    }
+    
     public function hashPassword(){
 
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
@@ -84,7 +106,7 @@ class Usuario extends ActiveRecord{
         $this->token = uniqid();
     }
 
-    public function validarLogin(){
+    public function validarCamposLogin(){
         if(!$this->email){
             self::$alertas['error'][] = '¿Cuál es tu email?';
         }
@@ -93,6 +115,36 @@ class Usuario extends ActiveRecord{
         }
 
         return self::$alertas;
+    }
+
+    
+    public function verificarPasswordAndconfirmado($password){
+        $resultado = password_verify($password, $this->password);
+        
+        if(!$resultado || $this->confirmado === '0'){
+            self::$alertas['error'][] = 'La contraseña no es correcta o el usuario no esta coonfirmado';
+        }else{
+            return true;
+        }
+        
+    }
+    public function restablecerPassword(){
+        
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+           $newPassword = s($_POST['password']); 
+           if(!strlen($newPassword) > 6){
+            $alertas['error'][] = 'El password debe tener al menos 6 caracteres';
+           }else{
+            $this->password =  $newPassword;
+                $alertas['exito'][] = 'El Password se cambio correctamente';
+           }
+           return $alertas;
+        }
+
+    }
+
+    
+
     }
 
     // public function crearUsuario(){
@@ -107,4 +159,3 @@ class Usuario extends ActiveRecord{
 
     // }
         
-}
