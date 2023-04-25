@@ -32,6 +32,8 @@ $router->get('/restablecer', [LoginController::class, 'restablecer']);
 $router->post('/restablecer', [LoginController::class, 'restablecer']);
 
 //login cliente and admin 
+$router->get('/citas',[LoginController::class, 'citas']);
+$router->post('/citas',[LoginController::class, 'citas']);
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

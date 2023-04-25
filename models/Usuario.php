@@ -1,6 +1,7 @@
-<?php 
+<?php
 
 namespace Model;
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -9,10 +10,11 @@ use Classes\Email;
 use Model\ActiveRecord;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class Usuario extends ActiveRecord{
+class Usuario extends ActiveRecord
+{
 
     protected static $tabla = 'usuarios';
-    protected static $columnasDB = ['id', 'nombre', 'apellido', 'email', 'password', 'telefono', 'admin', 'confirmado', 'token' ];
+    protected static $columnasDB = ['id', 'nombre', 'apellido', 'email', 'password', 'telefono', 'admin', 'confirmado', 'token'];
 
     public $id;
     public $nombre;
@@ -24,7 +26,8 @@ class Usuario extends ActiveRecord{
     public $confirmado;
     public $token;
 
-    public function __construct($args = []){
+    public function __construct($args = [])
+    {
         $this->id = $args['id'] ?? null;
         $this->nombre = $args['nombre'] ?? '';
         $this->apellido = $args['apellido'] ?? '';
@@ -34,118 +37,125 @@ class Usuario extends ActiveRecord{
         $this->admin = $args['admin'] ?? '0';
         $this->confirmado = $args['confirmado'] ?? '0';
         $this->token = $args['token'] ?? '';
-        
     }
-    public function validarNuevaCuenta(){
-        if(!$this->nombre){
+    public function validarNuevaCuenta()
+    {
+        if (!$this->nombre) {
             self::$alertas['error'][] = 'El nombre es obligatorio';
         }
-        if(!$this->apellido){
+        if (!$this->apellido) {
             self::$alertas['error'][] = 'El apellido es obligatorio';
         }
-        if(!$this->email){
+        if (!$this->email) {
             self::$alertas['error'][] = 'El email es obligatorio';
         }
-        if(!$this->password){
+        if (!$this->password) {
             self::$alertas['error'][] = 'El password es obligatorio';
         }
-        if(strlen($this->password) < 6){
+        if (strlen($this->password) < 6) {
             self::$alertas['error'][] = 'El password debe tener al menos 6 caracteres';
         }
-      
-            return self::$alertas;
-        
+
+        return self::$alertas;
     }
-    public function validarExisteUsuario(){
+    public function validarExisteUsuario()
+    {
         $query = "SELECT * FROM " . self::$tabla . " WHERE email = '" . $this->email . "' LIMIT 1";
 
         $resultado = self::$db->query($query);
 
-        if($resultado->num_rows){
-           self::$alertas['error'][] = 'El usuario ya existe';
+        if ($resultado->num_rows) {
+            self::$alertas['error'][] = 'El usuario ya existe';
         }
-            return $resultado;
-    } 
+        return $resultado;
+    }
 
-    public function validarEmail(){
-        if(!$this->email){
+    public function validarEmail()
+    {
+        if (!$this->email) {
             self::$alertas['error'][] = 'El email es obligatorio';
         }
         return self::$alertas;
     }
-
-    public function validarUsuario(){
-        if(!$this){
-            $alertas['error'][] = 'El usuario no existe o no esta confirmado';            
-        }else{
-          $alertas['exito'][] = 'Revisa tu email';
-          $this->crearToken();
-          $this->guardar();
-        } 
-        return $alertas;
+    public function enviarEmail()
+    {   
+        $token = $this->crearToken();
+        $email = new Email($this->email, $this->nombre, $this->token);
+        $this->guardar();
+        $email->enviarEmailParaRestablecer();
     }
-    
-    public function hashPassword(){
+
+    public function hashPassword()
+    {
 
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
     }
 
-    public function auth(){
+    public function auth()
+    {
         $atributos = $this->sanitizarAtributos();
 
         $query = "INSERT INTO " . self::$tabla . " (";
-        $query.= join(' ,', array_keys($atributos));
-        $query.=") VALUES ( '";
-        $query.= join("' ,'", array_values($atributos));
-        $query.= "')";
-
-
+        $query .= join(' ,', array_keys($atributos));
+        $query .= ") VALUES ( '";
+        $query .= join("' ,'", array_values($atributos));
+        $query .= "')";
     }
 
-    public function crearToken(){
+    public function crearToken()
+    {
         $this->token = uniqid();
     }
 
-    public function validarCamposLogin(){
-        if(!$this->email){
+    public function validarCamposLogin()
+    {
+        if (!$this->email) {
             self::$alertas['error'][] = '¿Cuál es tu email?';
         }
-        if(!$this->password){
+        if (!$this->password) {
             self::$alertas['error'][] = '¿Cuál es el password?';
         }
 
         return self::$alertas;
     }
 
-    
-    public function verificarPasswordAndconfirmado($password){
-        $resultado = password_verify($password, $this->password);
-        
-        if(!$resultado || $this->confirmado === '0'){
-            self::$alertas['error'][] = 'La contraseña no es correcta o el usuario no esta coonfirmado';
-        }else{
-            return true;
+
+    public function verificarPasswordAndconfirmado($password)
+    {
+       $resultado = password_verify($this->password, $password);
+       if(!$resultado){
+        self::$alertas['error'][] = 'El password o el usuario no son correctos';
+        return self::$alertas;
+       }
+       return $resultado;
+    }
+
+    public function validarPassword()
+    {
+        if (strlen($this->password) < 6) {
+            self::$alertas['error'][] = 'El password debe contener al menos 6 caracteres';
         }
-        
+        return self::$alertas;
     }
-    public function restablecerPassword(){
+
+    public function iniciarSesion(){
         
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
-           $newPassword = s($_POST['password']); 
-           if(!strlen($newPassword) > 6){
-            $alertas['error'][] = 'El password debe tener al menos 6 caracteres';
-           }else{
-            $this->password =  $newPassword;
-                $alertas['exito'][] = 'El Password se cambio correctamente';
-           }
-           return $alertas;
+        session_start();
+        $_SESSION['id'] = $this->id;
+        $_SESSION['nombre'] = $this->nombre . " " . $this->apellido;
+        $_SESSION['email'] = $this->email;
+        $_SESSION['login'] = true;
+
+        if ($this->admin === '1') {
+            $_SESSION['admin'] = $this->admin ?? null;
+
+            header('Location: /admin');
+        } else {
+
+            header('Location: /citas');
         }
-
     }
-
-    
-
-    }
+}
 
     // public function crearUsuario(){
     //     $atributos = self::sanitizarAtributos();
@@ -158,4 +168,3 @@ class Usuario extends ActiveRecord{
     //     $query.= ")" ;
 
     // }
-        
