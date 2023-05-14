@@ -151,8 +151,7 @@ class Usuario extends ActiveRecord
 
             header('Location: /admin');
         } else {
-
-            header('Location: /citas');
+            header('Location: /cita');
         }
     }
 }

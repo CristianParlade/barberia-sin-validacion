@@ -4,6 +4,7 @@ require_once __DIR__ . '/../includes/app.php';
 
 use MVC\Router;
 use Controllers\LoginController;
+use Controllers\CitaController;
 
 $router = new Router();
 //iniciar sesion 
@@ -32,8 +33,8 @@ $router->get('/restablecer', [LoginController::class, 'restablecer']);
 $router->post('/restablecer', [LoginController::class, 'restablecer']);
 
 //login cliente and admin 
-$router->get('/citas',[LoginController::class, 'citas']);
-$router->post('/citas',[LoginController::class, 'citas']);
+$router->get('/cita',[CitaController::class, 'index']);
+$router->post('/cita',[CitaController::class, 'index']);
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

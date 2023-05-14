@@ -14,5 +14,6 @@
             <?php echo $contenido; ?>
         </div>
     </div>
+    <?php echo $script ?? ''; ?>
 </body>
 </html>

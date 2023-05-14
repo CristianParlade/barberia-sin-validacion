@@ -1,0 +1,23 @@
+@use 'base/mixins' as m;
+@use 'base/variables' as v;
+.paginacion{
+    display: block;
+    padding: v.$separacion 0;
+
+    @include m.telefono{
+        display: flex;
+        justify-content: space-between;
+    }
+    button{
+        display: block;
+        width: 100%;
+        margin: 1rem 1rem;
+    }
+
+   
+
+} 
+
+.ocultar{
+        visibility: hidden;
+    }

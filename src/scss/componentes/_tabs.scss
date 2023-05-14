@@ -1,0 +1,31 @@
+@use 'base/mixins' as m;
+@use 'base/variables' as v;
+.tabs{
+
+    @include m.telefono{
+        display: flex;
+    }
+
+    button{
+        display: block;
+        width: 100%;
+        background-color: v.$azul;
+        padding: 1rem;
+        color: v.$blanco;
+        border: none;
+        margin: 0 0 1rem 0;
+        text-transform: uppercase;
+        font-weight: v.$bold;
+        cursor: pointer;
+        &:hover{
+            background-color: darken($color: v.$azul, $amount: 10%);
+        }
+    }
+    .actual{
+        background-color: v.$blanco;
+        color: v.$azul;
+        &:hover{
+            background-color: darken($color: v.$blanco, $amount: 10%);
+        }
+    }
+}

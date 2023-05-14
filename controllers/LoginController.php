@@ -28,7 +28,7 @@ class LoginController
                     if ($usuarioDB) {
                         $resultado = $auth->verificarPasswordAndconfirmado($usuarioDB->password);
                         if ($resultado === true) {
-                            $auth->iniciarSesion();
+                            $usuarioDB->iniciarSesion();
                         }
 
                     } else {
